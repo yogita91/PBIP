@@ -1,153 +1,157 @@
 ```yaml
 createOrReplace
 
-    table INFLUENZA
-        lineageTag: c251e7bb-e255-41ae-888b-a23481db9f98
-        column 'Week Ending (Friday)'
-            dataType: datetime
-            lineageTag: 726e3a5f-f56c-4146-b5f7-3004e364ef94
-            summarizeBy: none
-            sourceColumn: Week Ending (Friday)
-            annotation SummarizationSetBy = Automatic
-
-        column 'STATE'
-            dataType: string
-            lineageTag: b0db1345-a3e1-496e-bb70-b2acb20cba9c
-            summarizeBy: none
-            sourceColumn: STATE
-            annotation SummarizationSetBy = Automatic
-
-        column 'Age  group'
-            dataType: string
-            lineageTag: d621fcf6-857c-42e2-bec5-c85799339c69
-            summarizeBy: none
-            sourceColumn: Age  group
-            annotation SummarizationSetBy = Automatic
-
-        column 'SEX'
-            dataType: string
-            lineageTag: f24cf76e-a81a-4893-8262-80225056235f
-            summarizeBy: none
-            sourceColumn: SEX
-            annotation SummarizationSetBy = Automatic
-
-        column 'Indigenous status'
-            dataType: string
-            lineageTag: f1ea493f-a259-4e85-8135-775134ef27eb
-            summarizeBy: none
-            sourceColumn: Indigenous status
-            annotation SummarizationSetBy = Automatic
-
-        column 'Type/Subtype'
-            dataType: string
-            lineageTag: 8c77fc08-97f9-4829-af8e-2b93354450c6
-            summarizeBy: none
-            sourceColumn: Type/Subtype
-            annotation SummarizationSetBy = Automatic
-
-        column 'Year'
-            dataType: int64
-            lineageTag: e1fd1861-33c4-4f47-848f-f225b7155eb0
-            summarizeBy: none
-            sourceColumn: Year
-            annotation SummarizationSetBy = Automatic
-
-        column 'Month'
-            dataType: int64
-            lineageTag: 5bc61b1c-fd43-4dc9-bf87-46c325677c7c
-            summarizeBy: none
-            sourceColumn: Month
-            annotation SummarizationSetBy = Automatic
-
-        partition INFLUENZA = m
-            mode: directQuery
-            source =
-                let
-                    Source = Snowflake_hf97758.australia-east.azure.snowflakecomputing.com,
-                    Database = Source{[ Name="HEALTHCARE", Kind="Database"]}[Data],
-                    Schema = Database{[ Name="PUBLIC", Kind="Schema"]}[Data],
-                    Table = Schema{[ Name="INFLUENZA", Kind="Table"]}[Data]
-                in
-                    Table
-        annotation PBI_NavigationStepName = Application
-        annotation PBI_ResultType = Table
-        measure 'Yearly Influenza Cases by Type' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Type/Subtype] IN {"A(H3N2)", "A(H1N1)pdm09", "A(H1N1)", "A and B"}))
-          formatString: 0
-          lineageTag: d69a0195-160e-4f02-8fe2-3f3b8bc67783
-
-        measure 'Total Cases by Year' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] > 0))
-          formatString: 0
-          lineageTag: b1d726ed-c9cb-4908-b1b3-b1dfec490837
-
-        measure 'Monthly Trends by Year' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = YEAR(TODAY())))
-          formatString: 0
-          lineageTag: 87635ed9-b205-4049-b39b-84346c72bc84
-
-        measure 'Total Cases By Age Group' = COUNTROWS('INFLUENZA')
-          formatString: 0
-          lineageTag: a22ec1ae-b263-44b3-bccc-fda1c8daea43
-
-        measure 'Yearly influenza Analysis By different Types' = 
-            COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] IN {2016, 2010, 2013, 2014, 2015, 2017, 2018, 2022, 2023, 2008, 2009} AND 'INFLUENZA'[Month] = MONTH(TODAY()))) - 
-            COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] IN {2016, 2010, 2013, 2014, 2015, 2017, 2018, 2022, 2023, 2008, 2009} AND 'INFLUENZA'[Month] = MONTH(TODAY()) - 1))
-          formatString: 0
-          lineageTag: 9163142c-55c3-4fe1-b545-08bfae536d34
-
-        measure 'Cases across different states' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[STATE] IN {"ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"}))
-          formatString: 0
-          lineageTag: 24546828-7581-4c86-86a3-b947cf168080
-
-        measure 'Cases' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = YEAR(TODAY())))
-          formatString: 0
-          lineageTag: d7828a39-2053-4694-9443-165ef5829633
-
-        measure 'Monthly Comparison of Cases' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = MAX('INFLUENZA'[Year])))
-          formatString: 0
-          lineageTag: 39276558-4429-4845-bcc3-593345df77c9
-
-        measure 'Total Cases by Month Name' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = MAX('INFLUENZA'[Year])))
-          formatString: 0
-          lineageTag: 6e693bc1-b116-4cf0-8be4-f412574896db
-
-        measure 'State Wise Analysis of Influenza Cases' = COUNTROWS(FILTER('INFLUENZA', NOT(ISBLANK('INFLUENZA'[Week Ending (Friday)]))))
-          formatString: 0
-          lineageTag: c5fc7643-6f4a-4846-8a47-a31727dc9855
-
-        measure 'Indigenous Status Analysis' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Indigenous status] = "Indigenous")) / COUNTROWS('INFLUENZA')
-          formatString: 0
-          lineageTag: 1354be30-f479-43cb-a660-c622d684992c
-
-        measure 'Year over Year change' = 
-            DIVIDE(SUMX(FILTER('INFLUENZA', 'INFLUENZA'[Year] = MAX('INFLUENZA'[Year])), 'INFLUENZA'[Month]), 
-                      SUMX(FILTER('INFLUENZA', 'INFLUENZA'[Year] = MAX('INFLUENZA'[Year])-1), 'INFLUENZA'[Month])) - 1
-          formatString: 0%
-          lineageTag: 49fc4958-3ec5-4515-85ef-0fb63f2c9171
-
-        measure 'Influenza Type along Age Group' = COUNTROWS(FILTER('INFLUENZA', ISBLANK('INFLUENZA'[Age  group]) && 'INFLUENZA'[STATE] <> ""))
-          formatString: 0
-          lineageTag: f342e3ea-c72b-4041-a079-d99650db06f2
-
-        measure 'Cumulative Cases Over the Latest Year' = 
-            SUMX(FILTER('INFLUENZA', 'INFLUENZA'[Year] = MAX('INFLUENZA'[Year])), COUNTROWS('INFLUENZA'))
-          formatString: 0
-          lineageTag: dc38d05d-c34a-49ec-aad1-59dc69383f47
-
-        measure '12-Week Trend of Moving Averages' = 
-            AVERAGEX(
-                DATESINPERIOD('INFLUENZA'[Week Ending (Friday)], TODAY(), -12, WEEK), 
-                COUNTROWS('INFLUENZA')
-            )
-          formatString: 0
-          lineageTag: 03db55e7-705d-4bc4-b95b-563bd7892176
-
-        measure 'Rolling 3-Month Average' = 
-            AVERAGEX(
-                VALUES('INFLUENZA'[Month]),
-                CALCULATE(
-                    COUNTROWS('INFLUENZA'),
-                    DATESINPERIOD('INFLUENZA'[Week Ending (Friday)], TODAY(), -3, MONTH)
-                )
-            )
-          formatString: 0
-          lineageTag: 3b6b140d-6a7c-4698-a803-5276417e4344
+    name Main
+    type tab
+    properties:
+        settings:
+            ThousandSep: ','
+            DecimalSep: '.'
+            MoneyThousandSep: ','
+            MoneyDecimalSep: '.'
+            MoneyFormat: '$ ###0.00;-$ ###0.00'
+            TimeFormat: 'h:mm:ss TT'
+            DateFormat: 'M/D/YYYY'
+            TimestampFormat: 'M/D/YYYY h:mm:ss[.fff] TT'
+            FirstWeekDay: 6
+            BrokenWeeks: 1
+            ReferenceDay: 0
+            FirstMonthOfYear: 1
+            CollationLocale: 'en-US'
+            CreateSearchIndexOnReload: 1
+            MonthNames: 'Jan;Feb;Mar;Apr;May;Jun;Jul;Aug;Sep;Oct;Nov;Dec'
+            LongMonthNames: 'January;February;March;April;May;June;July;August;September;October;November;December'
+            DayNames: 'Mon;Tue;Wed;Thu;Fri;Sat;Sun'
+            LongDayNames: 'Monday;Tuesday;Wednesday;Thursday;Friday;Saturday;Sunday'
+            NumericalAbbreviation: '3:k;6:M;9:G;12:T;15:P;18:E;21:Z;24:Y;-3:m;-6:μ;-9:n;-12:p;-15:f;-18:a;-21:z;-24:y'
+    - name Authorization
+      type tab
+      properties:
+          dataManagerTables: ['', 'INFLUENZA']
+          script: |
+            For each name in $(dataManagerTables)
+                Let index = 0;
+                Let currentName = name; 
+                Let tableNumber = TableNumber(name); 
+                Let matches = 0; 
+                Do while not IsNull(tableNumber) or (index > 0 and matches > 0)
+                    index = index + 1; 
+                    currentName = name & '-' & index; 
+                    tableNumber = TableNumber(currentName) 
+                    matches = Match('$(currentName)', $(dataManagerTables));
+                Loop 
+                If index > 0 then 
+                    Rename Table '$(name)' to '$(currentName)'; 
+                EndIf; 
+            Next; 
+            Set dataManagerTables = ;
+          unqualify: '*'
+          connection: 
+            type: LIB
+            value: 'Snowflake_hf97758.australia-east.azure.snowflakecomputing.com'
+    - name Application
+      type tab
+      properties:
+          mappings:
+              - name 'Age groupMapping'
+                type MAPPING LOAD
+                source: INLINE
+                value:
+                  - "Age groupMapping-FROM,Age groupMapping-TO"
+                  - "Oct-14,85+"
+                  - "05-Sep,50-54"
+              - name 'Indigenous statusMapping'
+                type MAPPING LOAD
+                source: INLINE
+                value:
+                  - "Indigenous statusMapping-FROM,Indigenous statusMapping-TO"
+                  - "Not available,Unknown"
+          tables:
+            - name INFLUENZA
+              type LOAD
+              source:
+                type: sql
+                value: |
+                  SELECT "Week Ending (Friday)",
+                         "STATE",
+                         "Age  group",
+                         "SEX",
+                         "Indigenous status",
+                         "Type/Subtype"
+                  FROM "HEALTHCARE"."PUBLIC"."INFLUENZA"
+              columns:
+                - name 'Week Ending (Friday)'
+                  dataType: datetime
+                  sourceColumn: 'Week Ending (Friday)'
+                - name 'STATE'
+                  dataType: string
+                  sourceColumn: 'STATE'
+                - name 'Age group'
+                  dataType: string
+                  sourceColumn: 'Age group'
+                - name 'SEX'
+                  dataType: string
+                  sourceColumn: 'SEX'
+                - name 'Indigenous status'
+                  dataType: string
+                  sourceColumn: 'Indigenous status'
+                - name 'Type/Subtype'
+                  dataType: string
+                  sourceColumn: 'Type/Subtype'
+                - name 'Year'
+                  dataType: int64
+                  sourceColumn: 'Year'
+                - name 'Month'
+                  dataType: int64
+                  sourceColumn: 'Month'
+                - name autoCalendar
+                  type: DECLARE
+                  value:
+                    fieldDefinitions:
+                      - name: Tagged
+                        value: ['$date']
+                      - name: FIELDS
+                        value:
+                          - name: 'Year'
+                            expression: 'Dual(Year($1), YearStart($1))'
+                            tags:
+                              - '$axis'
+                              - '$year'
+                          - name: 'Quarter'
+                            expression: 'Dual('Q'&Num(Ceil(Num(Month($1))/3)),Num(Ceil(NUM(Month($1))/3),00))'
+                            tags:
+                              - '$quarter'
+                              - '$cyclic'
+                          - name: 'Month'
+                            expression: 'Month($1)'
+                            tags:
+                              - '$month'
+                              - '$cyclic'
+                      - name: DERIVE FIELDS FROM
+                        value: 'FIELDS [Week Ending (Friday)] USING [autoCalendar]'
+          measures:
+            - name 'Yearly Influenza Cases by Type'
+              expression 'Count({< [Type/Subtype] = {"A(H3N2)", "A(H1N1)pdm09", "A(H1N1)", "A and B"}>} [Type/Subtype])'
+              formatString '0'
+              lineageTag: pQwjL
+            - name 'Total Cases by Year'
+              expression 'Count({<year = {">0"}>} [Type/Subtype])'
+              formatString '0'
+              lineageTag: pJLFFzU
+            - name 'Monthly Trends by Year'
+              expression 'Count({<Year = P({$} Year)>} [Type/Subtype])'
+              formatString '0'
+              lineageTag: NAfAGM
+            - name 'Total Cases By Age Group'
+              expression 'Count(total [Age group])'
+              formatString '0'
+              lineageTag: TmHbvcF
+            - name 'Yearly influenza Analysis By different Types'
+              expression 'Count({<Year={2016,2010,2013,2014,2015,2017,2018,2022,2023,2008,2009}, Month={$(=Month(Today()))}>} [Type/Subtype]) - Count({<Year={2016,2010,2013,2014,2015,2017,2018,2022,2023,2008,2009}, Month={$(=Month(Today())-1)}>} [Type/Subtype])'
+              formatString '0'
+              lineageTag: uHshkc
+            - name 'Cases across different states'
+              expression 'Count({<STATE = {"ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"}>} [Type/Subtype])'
+              formatString '0'
+              lineageTag: GdTrKT
 ```
