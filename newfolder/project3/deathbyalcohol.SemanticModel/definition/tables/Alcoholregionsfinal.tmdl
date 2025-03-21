@@ -1,1 +1,153 @@
-YGBgeWFtbApjcmVhdGVPclJlcGxhY2UKCiAgICB0YWJsZSBNYWluCiAgICAgICAgbGluZWFnZVRhZzogYjdjZmY2YTgtYzk3NC00Y2FlLThmYzUtZGU0YzhhNjNmMjM2CiAgICAgICAgY29sdW1uIG5hbWUKICAgICAgICAgICAgZGF0YVR5cGU6IHN0cmluZwogICAgICAgICAgICBsaW5lYWdlVGFnOiBhN2NmODlhYi0zMzRiLTQ1ODUtYWJjMy1hNTc5ZjE1YzJlNDQKICAgICAgICAgICAgc3VtbWFyaXplQnk6IG5vbmUKICAgICAgICAgICAgc291cmNlQ29sdW1uOiBuYW1lCiAgICAgICAgICAgIGFubm90YXRpb24gU3VtbWFyaXphdGlvblNldEJ5ID0gQXV0b21hdGljCiAgICAgICAgcGFydGl0aW9uIEVtcGxveWVlcwogICAgICAgICAgICBtb2RlOiBpbXBvcnQKICAgICAgICAgICAgc291cmNlID0KICAgICAgICAgICAgICAgIGxldAogICAgICAgICAgICAgICAgICAgIFNvdXJjZSA9IFtsaWI6Ly9EYXRhRmlsZXMvZGF0YXNldC54bHN4XSwKICAgICAgICAgICAgICAgICAgICBUYWJsZSA9IFNvdXJjZXtbIE5hbWU9IkVtcGxveWVlcyIsIEtpbmQ9IlRhYmxlIl19W0RhdGFdCiAgICAgICAgICAgICAgICBpbgogICAgICAgICAgICAgICAgICAgIFRhYmxlCiAgICAgICAgcGFydGl0aW9uIFNhbGVzCiAgICAgICAgICAgIG1vZGU6IGltcG9ydAogICAgICAgICAgICBzb3VyY2UgPQogICAgICAgICAgICAgICAgbGV0CiAgICAgICAgICAgICAgICAgICAgU291cmNlID0gW2xpYjovL0RhdGFGaWxlcy9kYXRhc2V0Lnhsc3hdLAogICAgICAgICAgICAgICAgICAgIFRhYmxlID0gU291cmNle1sgTmFtZT0iU2FsZXMiLCBLaW5kPSJUYWJsZSJdfVtEYXRhXQogICAgICAgICAgICAgICAgaW4KICAgICAgICAgICAgICAgICAgICBUYWJsZQogICAgICAgIHBhcnRpdGlvbiBMb2NhdGlvbnMKICAgICAgICAgICAgbW9kZTogaW1wb3J0CiAgICAgICAgICAgIHNvdXJjZSA9CiAgICAgICAgICAgICAgICBsZXQKICAgICAgICAgICAgICAgICAgICBTb3VyY2UgPSBbbGliOi8vRGF0YUZpbGVzL2RhdGFzZXQueGxzeF0sCiAgICAgICAgICAgICAgICAgICAgVGFibGUgPSBTb3VyY2V7WyBOYW1lPSJMb2NhdGlvbnMiLCBLaW5kPSJUYWJsZSJdfVtEYXRhXQogICAgICAgICAgICAgICAgaW4KICAgICAgICAgICAgICAgICAgICBUYWJsZQogICAgICAgIHRhZyBmaWVsZCBbQ2l0eV0gd2l0aCAnJGdlb25hbWUnLCAnJHJlbGF0ZXNfTG9jYXRpb25zLkNpdHlfR2VvSW5mbycKICAgICAgICB0YWcgZmllbGQgW0xvY2F0aW9ucy5DaXR5X0dlb0luZm9dIHdpdGggJyRnZW9wb2ludCcsICckaGlkZGVuJywgJyRyZWxhdGVzX0NpdHknCiAgICAgICAgZHJvcCB0YWJsZXMgX19jaXR5QWxpYXNlc0Jhc2UsIF9fY2l0eUdlb0Jhc2UKICAgICAgICBuYW1lOiBhdXRvQ2FsZW5kYXIKICAgICAgICBmaWVsZHM6CiAgICAgICAgICAgIC0gbmFtZTogRGF0ZQogICAgICAgICAgICAgIHRhZ2dlZDogJyRkYXRlJwogICAgICAgICAgICAgIGRlZmluaXRpb25zOgogICAgICAgICAgICAgICAgLSBuYW1lOiBZZWFyCiAgICAgICAgICAgICAgICAgIHR5cGU6IER1YWwoWWVhcigkMSksIFllYXJTdGFydCgkMSkpCiAgICAgICAgICAgICAgICAgIHRhZ3M6IFsnJGF4aXMnLCAnJHllYXInXQogICAgICAgICAgICAgICAgLSBuYW1lOiBRdWFydGVyCiAgICAgICAgICAgICAgICAgIHR5cGU6IER1YWwoJ1EnJk51bShDZWlsKE51bShNb250aCgkMSkpLzMpKSxOdW0oQ2VpbChOVU0oTW9udGgoJDEpKS8zKSwwMCkpCiAgICAgICAgICAgICAgICAgIHRhZ3M6IFsnJHF1YXJ0ZXInLCAnJGN5Y2xpYyddCiAgICAgICAgICAgICAgICAtIG5hbWU6IE1vbnRoCiAgICAgICAgICAgICAgICAgIHR5cGU6IE1vbnRoKCQxKQogICAgICAgICAgICAgICAgICB0YWdzOiBbJyRtb250aCcsICckY3ljbGljJ10KICAgICAgICBtZWFzdXJlczoKICAgICAgICAgICAgLSBuYW1lOiAnQmVzdCBQZXJmb3JtaW5nIEVtcGxveWVlIChIaWdoZXN0IFNhbGVzKScKICAgICAgICAgICAgICBleHByZXNzaW9uOiBGaXJzdFNvcnRlZFZhbHVlKFtFbXBsb3llZS1TYWxlc10sIC1BZ2dyKFNVTShbVG90YWwgU2FsZXNdKSwgRW1wSUQpKQogICAgICAgICAgICAgIGZvcm1hdFN0cmluZzogVQogICAgICAgICAgICAtIG5hbWU6ICdIaWdoZXN0IFNhbGVzIExvY2F0aW9uJwogICAgICAgICAgICAgIGV4cHJlc3Npb246IEZpcnN0U29ydGVkVmFsdWUoW0VtcGxveWVlLVNhbGVzXSwgLUFnZ3IoU1VNKFtUb3RhbCBTYWxlc10pLCBFbXBJRCkpCiAgICAgICAgICAgICAgZm9ybWF0U3RyaW5nOiBVCiAgICAgICAgICAgIC0gbmFtZTogJ1NhbGVzIHBlciBEYXknCiAgICAgICAgICAgICAgZXhwcmVzc2lvbjogU1VNKFtUb3RhbCBTYWxlc10pIC8gQ09VTlQoRElTVElOQ1QgW0RhdGVdKQogICAgICAgICAgICAgIGZvcm1hdFN0cmluZzogVQogICAgICAgICAgICAtIG5hbWU6ICdVbml0cyBTb2xkIHBlciBUcmFuc2FjdGlvbicKICAgICAgICAgICAgICBleHByZXNzaW9uOiBTVU0oW1RvdGFsIFVuaXRzXSkgLyBDT1VOVChbVG90YWwgVW5pdHNdKQogICAgICAgICAgICAgIGZvcm1hdFN0cmluZzogVQogICAgICAgICAgICAtIG5hbWU6ICdTYWxlcyBwZXIgRW1wbG95ZWUgcGVyIExvY2F0aW9uJwogICAgICAgICAgICAgIGV4cHJlc3Npb246IFNVTShbVG90YWwgU2FsZXNdKSAvIENPVU5UKERJU1RJTkNUIFtFbXBsb3llZS1TYWxlc10pCiAgICAgICAgICAgICAgZm9ybWF0U3RyaW5nOiBVCmBgYA==
+```yaml
+createOrReplace
+
+    table INFLUENZA
+        lineageTag: c251e7bb-e255-41ae-888b-a23481db9f98
+        column 'Week Ending (Friday)'
+            dataType: datetime
+            lineageTag: 726e3a5f-f56c-4146-b5f7-3004e364ef94
+            summarizeBy: none
+            sourceColumn: Week Ending (Friday)
+            annotation SummarizationSetBy = Automatic
+
+        column 'STATE'
+            dataType: string
+            lineageTag: b0db1345-a3e1-496e-bb70-b2acb20cba9c
+            summarizeBy: none
+            sourceColumn: STATE
+            annotation SummarizationSetBy = Automatic
+
+        column 'Age  group'
+            dataType: string
+            lineageTag: d621fcf6-857c-42e2-bec5-c85799339c69
+            summarizeBy: none
+            sourceColumn: Age  group
+            annotation SummarizationSetBy = Automatic
+
+        column 'SEX'
+            dataType: string
+            lineageTag: f24cf76e-a81a-4893-8262-80225056235f
+            summarizeBy: none
+            sourceColumn: SEX
+            annotation SummarizationSetBy = Automatic
+
+        column 'Indigenous status'
+            dataType: string
+            lineageTag: f1ea493f-a259-4e85-8135-775134ef27eb
+            summarizeBy: none
+            sourceColumn: Indigenous status
+            annotation SummarizationSetBy = Automatic
+
+        column 'Type/Subtype'
+            dataType: string
+            lineageTag: 8c77fc08-97f9-4829-af8e-2b93354450c6
+            summarizeBy: none
+            sourceColumn: Type/Subtype
+            annotation SummarizationSetBy = Automatic
+
+        column 'Year'
+            dataType: int64
+            lineageTag: e1fd1861-33c4-4f47-848f-f225b7155eb0
+            summarizeBy: none
+            sourceColumn: Year
+            annotation SummarizationSetBy = Automatic
+
+        column 'Month'
+            dataType: int64
+            lineageTag: 5bc61b1c-fd43-4dc9-bf87-46c325677c7c
+            summarizeBy: none
+            sourceColumn: Month
+            annotation SummarizationSetBy = Automatic
+
+        partition INFLUENZA = m
+            mode: directQuery
+            source =
+                let
+                    Source = Snowflake_hf97758.australia-east.azure.snowflakecomputing.com,
+                    Database = Source{[ Name="HEALTHCARE", Kind="Database"]}[Data],
+                    Schema = Database{[ Name="PUBLIC", Kind="Schema"]}[Data],
+                    Table = Schema{[ Name="INFLUENZA", Kind="Table"]}[Data]
+                in
+                    Table
+        annotation PBI_NavigationStepName = Application
+        annotation PBI_ResultType = Table
+        measure 'Yearly Influenza Cases by Type' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Type/Subtype] IN {"A(H3N2)", "A(H1N1)pdm09", "A(H1N1)", "A and B"}))
+          formatString: 0
+          lineageTag: d69a0195-160e-4f02-8fe2-3f3b8bc67783
+
+        measure 'Total Cases by Year' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] > 0))
+          formatString: 0
+          lineageTag: b1d726ed-c9cb-4908-b1b3-b1dfec490837
+
+        measure 'Monthly Trends by Year' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = YEAR(TODAY())))
+          formatString: 0
+          lineageTag: 87635ed9-b205-4049-b39b-84346c72bc84
+
+        measure 'Total Cases By Age Group' = COUNTROWS('INFLUENZA')
+          formatString: 0
+          lineageTag: a22ec1ae-b263-44b3-bccc-fda1c8daea43
+
+        measure 'Yearly influenza Analysis By different Types' = 
+            COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] IN {2016, 2010, 2013, 2014, 2015, 2017, 2018, 2022, 2023, 2008, 2009} AND 'INFLUENZA'[Month] = MONTH(TODAY()))) - 
+            COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] IN {2016, 2010, 2013, 2014, 2015, 2017, 2018, 2022, 2023, 2008, 2009} AND 'INFLUENZA'[Month] = MONTH(TODAY()) - 1))
+          formatString: 0
+          lineageTag: 9163142c-55c3-4fe1-b545-08bfae536d34
+
+        measure 'Cases across different states' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[STATE] IN {"ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"}))
+          formatString: 0
+          lineageTag: 24546828-7581-4c86-86a3-b947cf168080
+
+        measure 'Cases' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = YEAR(TODAY())))
+          formatString: 0
+          lineageTag: d7828a39-2053-4694-9443-165ef5829633
+
+        measure 'Monthly Comparison of Cases' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = MAX('INFLUENZA'[Year])))
+          formatString: 0
+          lineageTag: 39276558-4429-4845-bcc3-593345df77c9
+
+        measure 'Total Cases by Month Name' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = MAX('INFLUENZA'[Year])))
+          formatString: 0
+          lineageTag: 6e693bc1-b116-4cf0-8be4-f412574896db
+
+        measure 'State Wise Analysis of Influenza Cases' = COUNTROWS(FILTER('INFLUENZA', NOT(ISBLANK('INFLUENZA'[Week Ending (Friday)]))))
+          formatString: 0
+          lineageTag: c5fc7643-6f4a-4846-8a47-a31727dc9855
+
+        measure 'Indigenous Status Analysis' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Indigenous status] = "Indigenous")) / COUNTROWS('INFLUENZA')
+          formatString: 0
+          lineageTag: 1354be30-f479-43cb-a660-c622d684992c
+
+        measure 'Year over Year change' = 
+            DIVIDE(SUMX(FILTER('INFLUENZA', 'INFLUENZA'[Year] = MAX('INFLUENZA'[Year])), 'INFLUENZA'[Month]), 
+                      SUMX(FILTER('INFLUENZA', 'INFLUENZA'[Year] = MAX('INFLUENZA'[Year])-1), 'INFLUENZA'[Month])) - 1
+          formatString: 0%
+          lineageTag: 49fc4958-3ec5-4515-85ef-0fb63f2c9171
+
+        measure 'Influenza Type along Age Group' = COUNTROWS(FILTER('INFLUENZA', ISBLANK('INFLUENZA'[Age  group]) && 'INFLUENZA'[STATE] <> ""))
+          formatString: 0
+          lineageTag: f342e3ea-c72b-4041-a079-d99650db06f2
+
+        measure 'Cumulative Cases Over the Latest Year' = 
+            SUMX(FILTER('INFLUENZA', 'INFLUENZA'[Year] = MAX('INFLUENZA'[Year])), COUNTROWS('INFLUENZA'))
+          formatString: 0
+          lineageTag: dc38d05d-c34a-49ec-aad1-59dc69383f47
+
+        measure '12-Week Trend of Moving Averages' = 
+            AVERAGEX(
+                DATESINPERIOD('INFLUENZA'[Week Ending (Friday)], TODAY(), -12, WEEK), 
+                COUNTROWS('INFLUENZA')
+            )
+          formatString: 0
+          lineageTag: 03db55e7-705d-4bc4-b95b-563bd7892176
+
+        measure 'Rolling 3-Month Average' = 
+            AVERAGEX(
+                VALUES('INFLUENZA'[Month]),
+                CALCULATE(
+                    COUNTROWS('INFLUENZA'),
+                    DATESINPERIOD('INFLUENZA'[Week Ending (Friday)], TODAY(), -3, MONTH)
+                )
+            )
+          formatString: 0
+          lineageTag: 3b6b140d-6a7c-4698-a803-5276417e4344
+```
