@@ -1,0 +1,75 @@
+```
+createOrReplace
+
+    table Main
+        lineageTag: a9f27e3b-6c12-4fd3-9e41-c7c619db3768
+        column city
+            dataType: string
+            lineageTag: b05f6b9b-22bb-455f-bc3f-d7b74683ed4f
+            summarizeBy: none
+            sourceColumn: City
+            annotation SummarizationSetBy = Automatic
+
+        column geoKey
+            dataType: string
+            lineageTag: c78f148f-d4e8-4539-a99e-f307967202c5
+            summarizeBy: none
+            sourceColumn: geoKey
+            annotation SummarizationSetBy = Automatic
+
+        column cityCountryCode
+            dataType: string
+            lineageTag: de6ca28f-fec3-43ef-ac59-d8100d796302
+            summarizeBy: none
+            sourceColumn: CountryCode
+            annotation SummarizationSetBy = Automatic
+
+        partition Employees
+            mode: import
+            source =
+                let
+                    Source = [lib://DataFiles/dataset.xlsx],
+                    TableName = 'Employees',
+                    LoadData = LOAD [EmpID] AS [Employee-Sales], [Name]
+                in
+                    LoadData
+        partition Sales
+            mode: import
+            source =
+                let
+                    Source = [lib://DataFiles/dataset.xlsx],
+                    TableName = 'Sales',
+                    LoadData = LOAD [EmpID] AS [Employee-Sales], [LocId] AS [Location-Sales], Date(Date#([Date], 'DD/MM/YYYY')) AS [Date], [Total Sales], [Total Units]
+                in
+                    LoadData
+        partition Locations
+            mode: import
+            source =
+                let
+                    Source = [lib://DataFiles/dataset.xlsx],
+                    TableName = 'Locations',
+                    LoadData = LOAD [LocId] AS [Location-Sales], [City], APPLYMAP('__cityKey2GeoPoint', APPLYMAP('__cityName2Key', LOWER([City])), '-') AS [Locations.City_GeoInfo]
+                in
+                    LoadData
+        annotation PBI_NavigationStepName = Auto-generated section
+        annotation PBI_ResultType = Table
+        measure 'Best Performing Employee (Highest Sales)' = FirstSortedValue('Employees'[Employee-Sales], -Aggr(SUM('Sales'[Total Sales]), 'Employees'[EmpID]))
+          formatString: $ #,0
+          lineageTag: c1d8829f-01ed-48c1-962f-261a226453ae
+
+        measure 'Highest Sales Location' = FirstSortedValue('Employees'[Employee-Sales], -Aggr(SUM('Sales'[Total Sales]), 'Employees'[EmpID]))
+          formatString: $ #,0
+          lineageTag: f1502467-f30e-46fd-9d51-289946658817
+
+        measure 'Sales per Day' = SUM('Sales'[Total Sales]) / COUNT(DISTINCT 'Sales'[Date])
+          formatString: $ #,0
+          lineageTag: a1a874f7-a705-40ff-b5eb-892617c51c9b
+
+        measure 'Units Sold per Transaction' = SUM('Sales'[Total Units]) / COUNT('Sales'[Total Units])
+          formatString: 0.0
+          lineageTag: f89473af-4307-4454-8766-7c58bb121601
+
+        measure 'Sales per Employee per Location' = SUM('Sales'[Total Sales]) / COUNT(DISTINCT 'Employees'[Employee-Sales])
+          formatString: $ #,0
+          lineageTag: db456073-7546-4772-865c-9110dfc9026d
+```
