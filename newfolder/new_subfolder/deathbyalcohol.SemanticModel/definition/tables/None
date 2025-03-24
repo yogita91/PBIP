@@ -1,112 +1,128 @@
-```yaml
-createOrReplace
-
-    table INFLUENZA
-        lineageTag: 65b1e7d3-639d-4ac3-b273-814a508e5432
-        column 'Week Ending (Friday)'
-            dataType: datetime
-            lineageTag: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-            summarizeBy: none
-            sourceColumn: "Week Ending (Friday)"
-            annotation SummarizationSetBy = Automatic
-        column 'STATE'
-            dataType: string
-            lineageTag: b2b3c4d5-e6f7-8901-abcd-ef1234567891
-            summarizeBy: none
-            sourceColumn: STATE
-            annotation SummarizationSetBy = Automatic
-        column 'Age  group'
-            dataType: string
-            lineageTag: c3c4d5e6-f7f8-9012-abcd-ef1234567892
-            summarizeBy: none
-            sourceColumn: 'Age  group'
-            annotation SummarizationSetBy = Automatic
-        column 'SEX'
-            dataType: string
-            lineageTag: d4d5e6f7-g8h9-0123-abcd-ef1234567893
-            summarizeBy: none
-            sourceColumn: SEX
-            annotation SummarizationSetBy = Automatic
-        column 'Indigenous status'
-            dataType: string
-            lineageTag: e5e6f7g8-h9i0-1234-abcd-ef1234567894
-            summarizeBy: none
-            sourceColumn: 'Indigenous status'
-            annotation SummarizationSetBy = Automatic
-        column 'Type/Subtype'
-            dataType: string
-            lineageTag: f6f7g8h9-i0j1-2345-abcd-ef1234567895
-            summarizeBy: none
-            sourceColumn: 'Type/Subtype'
-            annotation SummarizationSetBy = Automatic
-        column 'Year'
-            dataType: int64
-            lineageTag: g7g8h9i0-j1k2-3456-abcd-ef1234567896
-            summarizeBy: none
-            sourceColumn: Year
-            annotation SummarizationSetBy = Automatic
-        column 'Month'
-            dataType: string
-            lineageTag: h8h9i0j1-k2l3-4567-abcd-ef1234567897
-            summarizeBy: none
-            sourceColumn: Month
-            annotation SummarizationSetBy = Automatic
-        partition INFLUENZA = m
-            mode: import
-            source =
-                let
-                    Source = Snowflake.Databases("hf97758.australia-east.azure.snowflakecomputing.com","HEALTHCARE"),
-                    TableData = Source{[ Name="PUBLIC", Kind="Schema"]}{[ Name="INFLUENZA", Kind="Table"]}[Data]
-                in
-                    TableData
-        annotation PBI_NavigationStepName = Data
-        annotation PBI_ResultType = Table
-        measure 'Yearly Influenza Cases by Type' = COUNTX(FILTER('INFLUENZA', 'INFLUENZA'[Type/Subtype] IN {"A(H3N2)", "A(H1N1)pdm09", "A(H1N1)", "A and B"}), 'INFLUENZA'[Type/Subtype])
-          formatString: 0
-          lineageTag: 59b67472-a5eb-4b7b-8051-bd214dc21c0f
-        measure 'Total Cases by Year' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] > 0))
-          formatString: 0
-          lineageTag: b6517742-e07f-40e4-b96f-dbf1e45404c3
-        measure 'Monthly Trends by Year' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = YEAR(TODAY())))
-          formatString: 0
-          lineageTag: f829c080-091f-4139-b408-c61eb5680091
-        measure 'Total Cases By Age Group' = COUNTROWS('INFLUENZA')
-          formatString: 0
-          lineageTag: d9af1461-78b6-46e2-b4f0-d92e9e89bbcd
-        measure 'Yearly influenza Analysis By different Types' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] IN {2016,2010,2013,2014,2015,2017,2018,2022,2023,2008,2009} && MONTH('INFLUENZA'[Week Ending (Friday)]) = MONTH(TODAY())))
-          formatString: 0
-          lineageTag: a32c2752-6609-46cf-9498-f23c21ea823f
-        measure 'Cases across different states' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[STATE] IN {"ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"}))
-          formatString: 0
-          lineageTag: 497e1564-962e-4d07-abb6-c22037237ae0
-        measure 'Cases' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = YEAR(TODAY())))
-          formatString: 0
-          lineageTag: d35e417c-c827-4ef5-9895-4f538c4b99cd
-        measure 'Monthly Comparison of Cases' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = YEAR(TODAY())))
-          formatString: 0
-          lineageTag: 1e51cb42-b66a-48ea-9620-16b64028df6c
-        measure 'Total Cases by Month Name' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = YEAR(TODAY())))
-          formatString: 0
-          lineageTag: 3e2948b3-1321-49da-ae9f-a571639ba25f
-        measure 'State Wise Analysis of Influenza Cases' = COUNTROWS('INFLUENZA')
-          formatString: 0
-          lineageTag: 11af4e42-b07e-46de-a99a-2876e3567ab7
-        measure 'Indigenous Status Analysis' = DIVIDE(COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Indigenous status] = "Indigenous")), COUNTROWS('INFLUENZA'))
-          formatString: 0.00%
-          lineageTag: 93f87764-d53b-45de-8963-cd25991c33ae
-        measure 'Year over Year change' = DIVIDE(SUM('INFLUENZA'[Year]), SUM('INFLUENZA'[Year]) - 1)
-          formatString: 0%
-          lineageTag: 7683265f-4024-47fd-a5d6-bde1434654d5
-        measure 'Influenza Type along Age Group' = COUNTROWS('INFLUENZA')
-          formatString: 0
-          lineageTag: edc99cc0-a89a-4d77-859e-abe77431444c
-        measure 'Cumulative Cases Over the Latest Year' = SUMX('INFLUENZA', COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = YEAR(TODAY()))))
-          formatString: 0
-          lineageTag: fde56729-f8eb-448f-89e6-cb68fc120237
-        measure '12-Week Trend of Moving Averages' = AVERAGEX('INFLUENZA', COUNTROWS('INFLUENZA'))
-          formatString: 0
-          lineageTag: 0c267029-d539-48d0-b771-b16e106474e8
-        measure 'Rolling 3-Month Average' = AVERAGE('INFLUENZA'[Total Cases])
-          formatString: 0
-          lineageTag: 94757be7-55ab-4614-a74e-cdf66813a942
-```
+name: Hospital_ER
+type: table
+lineageTag: b7cff6a8-c974-4cae-8fc5-de4c8a63f236
+columns:
+  - name: date
+    dataType: datetime
+    lineageTag: c78f148f-d4e8-4539-a99e-f307967202c5
+    summarizeBy: none
+    sourceColumn: date
+    annotation:
+      SummarizationSetBy: Automatic
+  - name: patient_id
+    dataType: string
+    lineageTag: de6ca28f-fec3-43ef-ac59-d8100d796302
+    summarizeBy: none
+    sourceColumn: patient_id
+    annotation:
+      SummarizationSetBy: Automatic
+  - name: patient_gender
+    dataType: string
+    lineageTag: f6202de1-1c5d-4b22-be91-20bdf5e8aa91
+    summarizeBy: none
+    sourceColumn: patient_gender
+    annotation:
+      SummarizationSetBy: Automatic
+  - name: patient_age
+    dataType: int64
+    lineageTag: 84cee5a4-5c00-4b04-91b1-2198a4b886b5
+    summarizeBy: average
+    sourceColumn: patient_age
+    annotation:
+      SummarizationSetBy: Automatic
+  - name: patient_sat_score
+    dataType: int64
+    lineageTag: e034f96e-7e6a-4e13-bc20-24246dfa9b6c
+    summarizeBy: average
+    sourceColumn: patient_sat_score
+    annotation:
+      SummarizationSetBy: Automatic
+  - name: patient_first_inital
+    dataType: string
+    lineageTag: 714db991-0450-4d21-8145-640a104a6ca9
+    summarizeBy: none
+    sourceColumn: patient_first_inital
+    annotation:
+      SummarizationSetBy: Automatic
+  - name: patient_last_name
+    dataType: string
+    lineageTag: 6fca95b5-7985-4734-a1d5-3549521ee412
+    summarizeBy: none
+    sourceColumn: patient_last_name
+    annotation:
+      SummarizationSetBy: Automatic
+  - name: patient_race
+    dataType: string
+    lineageTag: ba33573b-ad31-4501-8471-8afa1fda5135
+    summarizeBy: none
+    sourceColumn: patient_race
+    annotation:
+      SummarizationSetBy: Automatic
+  - name: patient_admin_flag
+    dataType: string
+    lineageTag: 79edc306-1a81-471c-822a-de4ae99fa1db
+    summarizeBy: none
+    sourceColumn: patient_admin_flag
+    annotation:
+      SummarizationSetBy: Automatic
+  - name: patient_waittime
+    dataType: int64
+    lineageTag: 0b6027cd-5306-4132-a682-440e98a719c6
+    summarizeBy: average
+    sourceColumn: patient_waittime
+    annotation:
+      SummarizationSetBy: Automatic
+  - name: department_referral
+    dataType: string
+    lineageTag: 567416f1-2070-42ef-ae44-8a64f4988048
+    summarizeBy: none
+    sourceColumn: department_referral
+    annotation:
+      SummarizationSetBy: Automatic
+partitions:
+  - name: Hospital_ER
+    mode: import
+    source:
+      type: m
+      value:
+        let
+          Source = Sql.Database("health-careserver.database.windows.net", "health-care2025", [Query="SELECT [date], [patient_id], [patient_gender], [patient_age], [patient_sat_score], [patient_first_inital], [patient_last_name], [patient_race], [patient_admin_flag], [patient_waittime], [department_referral] FROM dbo.Hospital ER"]),
+          ChangedType = Table.TransformColumnTypes(Source,{{"date", type datetime}, {"patient_id", type text}, {"patient_gender", type text}, {"patient_age", Int64.Type}, {"patient_sat_score", type number}, {"patient_first_inital", type text}, {"patient_last_name", type text}, {"patient_race", type text}, {"patient_admin_flag", type text}, {"patient_waittime", type number}, {"department_referral", type text}})
+        in
+          ChangedType
+    annotation:
+      PBI_NavigationStepName: Navigation
+      PBI_ResultType: Table
+measures:
+  - name: 'Total patients'
+    expression: COUNT('Hospital_ER'[patient_id])
+    formatString: 0
+    lineageTag: jTacdm
+  - name: 'Average Wait Time'
+    expression: AVERAGE('Hospital_ER'[patient_waittime])
+    formatString: #,##0.00
+    lineageTag: pnxvJ
+  - name: 'Satisfaction Score Analysis'
+    expression: AVERAGE('Hospital_ER'[patient_sat_score])
+    formatString: 0%
+    lineageTag: pUuEYW
+  - name: 'Patient Age Distribution'
+    expression: AVERAGE('Hospital_ER'[patient_age])
+    formatString: #,##0
+    lineageTag: RhBgr
+  - name: 'Admission Rate'
+    expression: COUNTROWS(FILTER('Hospital_ER', 'Hospital_ER'[patient_admin_flag] = "True"))
+    formatString: #,##0.00
+    lineageTag: jmzHzN
+  - name: 'Referral Department Distribution'
+    expression: COUNTROWS(FILTER('Hospital_ER', 'Hospital_ER'[department_referral] = "General Practice"))
+    formatString: 0
+    lineageTag: mPWPA
+  - name: 'ADMITTED'
+    expression: COUNTROWS(FILTER('Hospital_ER', 'Hospital_ER'[patient_admin_flag] = "1"))
+    formatString: #,##0
+    lineageTag: mpdQJE
+  - name: 'NOT ADMITTED'
+    expression: COUNTROWS(FILTER('Hospital_ER', 'Hospital_ER'[patient_admin_flag] = "0"))
+    formatString: 0
+    lineageTag: SRBCuV
