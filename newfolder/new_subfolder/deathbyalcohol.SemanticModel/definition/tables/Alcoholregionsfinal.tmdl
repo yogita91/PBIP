@@ -1,0 +1,112 @@
+```yaml
+createOrReplace
+
+    table INFLUENZA
+        lineageTag: 1f2b6530-601c-48c0-83c9-b2022196ff8f
+        column 'Week Ending (Friday)'
+            dataType: datetime
+            lineageTag: 0c3c8cb7-6cbb-4cc2-a4c2-caf14480346c
+            summarizeBy: none
+            sourceColumn: "Week Ending (Friday)"
+            annotation SummarizationSetBy = Automatic
+        column 'STATE'
+            dataType: string
+            lineageTag: 59a10bd1-91d4-414d-bbd6-fd5308dc0864
+            summarizeBy: none
+            sourceColumn: STATE
+            annotation SummarizationSetBy = Automatic
+        column 'Age group'
+            dataType: string
+            lineageTag: 6a66ef87-e253-49ff-b5dc-baff18292e36
+            summarizeBy: none
+            sourceColumn: [Age  group]
+            annotation SummarizationSetBy = Automatic
+        column 'SEX'
+            dataType: string
+            lineageTag: 47e287c0-f028-438f-b64e-a314c158b241
+            summarizeBy: none
+            sourceColumn: SEX
+            annotation SummarizationSetBy = Automatic
+        column 'Indigenous status'
+            dataType: string
+            lineageTag: b146ee60-97ee-4668-a749-d64d6ab62793
+            summarizeBy: none
+            sourceColumn: [Indigenous status]
+            annotation SummarizationSetBy = Automatic
+        column 'Type/Subtype'
+            dataType: string
+            lineageTag: 1cda28f2-cde4-4955-b8bc-a4085ad25cf1
+            summarizeBy: none
+            sourceColumn: [Type/Subtype]
+            annotation SummarizationSetBy = Automatic
+        column 'Year'
+            dataType: int64
+            lineageTag: 88da6a02-a827-4b15-90a9-a36a92f63457
+            summarizeBy: none
+            sourceColumn: Year
+            annotation SummarizationSetBy = Automatic
+        column 'Month'
+            dataType: int64
+            lineageTag: e857b021-4576-4892-87c6-d5573249e8cc
+            summarizeBy: none
+            sourceColumn: Month
+            annotation SummarizationSetBy = Automatic
+        partition INFLUENZA = m
+            mode: import
+            source =
+                let
+                    Source = Sql.Database("healthcare","PUBLIC"),
+                    Data = Source{[ Name="INFLUENZA", Kind="Table"]}[Data]
+                in
+                    Data
+        annotation PBI_NavigationStepName = Navigation
+        annotation PBI_ResultType = Table
+        measure 'Yearly Influenza Cases by Type' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Type/Subtype] IN {"A(H3N2)", "A(H1N1)pdm09", "A(H1N1)", "A and B"}))
+          formatString: 0
+          lineageTag: pQwjL
+        measure 'Total Cases by Year' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] > 0))
+          formatString: 0
+          lineageTag: pJLFFzU
+        measure 'Monthly Trends by Year' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = YEAR(TODAY())))
+          formatString: 0
+          lineageTag: NAfAGM
+        measure 'Total Cases By Age Group' = COUNTROWS('INFLUENZA')
+          formatString: 0
+          lineageTag: TmHbvcF
+        measure 'Yearly influenza Analysis By different Types' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] IN {2016, 2010, 2013, 2014, 2015, 2017, 2018, 2022, 2023} && MONTH(TODAY()) = MONTH('INFLUENZA'[Week Ending (Friday)])))
+          formatString: 0
+          lineageTag: uHshkc
+        measure 'Cases across different states' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[STATE] IN {"ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"}))
+          formatString: 0
+          lineageTag: GdTrKT
+        measure 'Cases' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = YEAR(TODAY())))
+          formatString: 0
+          lineageTag: UTJJuew
+        measure 'Monthly Comparison of Cases' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = MAX('INFLUENZA'[Year])))
+          formatString: 0
+          lineageTag: Cszqju
+        measure 'Total Cases by Month Name' = COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = MAX('INFLUENZA'[Year])))
+          formatString: 0
+          lineageTag: mpqxkR
+        measure 'State Wise Analysis of Influenza Cases' = COUNTROWS('INFLUENZA')
+          formatString: 0
+          lineageTag: kzPmMBY
+        measure 'Indigenous Status Analysis' = DIVIDE(COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Indigenous status] = "Indigenous")), COUNTROWS('INFLUENZA'))
+          formatString: 0.00%
+          lineageTag: DTvme
+        measure 'Year over Year change' = DIVIDE(SUMX(FILTER('INFLUENZA', 'INFLUENZA'[Year] = MAX('INFLUENZA'[Year])), MONTH('INFLUENZA'[Week Ending (Friday)])), SUMX(FILTER('INFLUENZA', 'INFLUENZA'[Year] = MAX('INFLUENZA'[Year])-1), MONTH('INFLUENZA'[Week Ending (Friday)])))-1
+          formatString: 0%
+          lineageTag: GJFP
+        measure 'Influenza Type along Age Group' = COUNTROWS(FILTER('INFLUENZA', ISBLANK('INFLUENZA'[Age group])))
+          formatString: 0
+          lineageTag: FrtyD
+        measure 'Cumulative Cases Over the Latest Year' = RANGE_SUM(ABOVE(COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = MAX('INFLUENZA'[Year]))), 0, ROW_NUMBER()))
+          formatString: 0
+          lineageTag: jjrJC
+        measure '12-Week Trend of Moving Averages' = AVERAGE(ABOVE(COUNTROWS(FILTER('INFLUENZA', 'INFLUENZA'[Year] = MAX('INFLUENZA'[Year]))), 0, 12))
+          formatString: 0
+          lineageTag: eTagPW
+        measure 'Rolling 3-Month Average' = AVERAGEX(VALUES(MONTH('INFLUENZA'[Week Ending (Friday)])), 3)
+          formatString: 0
+          lineageTag: RCHmZwX
+```
