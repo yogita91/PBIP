@@ -1,0 +1,161 @@
+```
+createOrReplace
+
+    table Main
+        lineageTag: a65f3682-28f2-45b7-9889-d674649f06f3
+        column 'ThousandSep'
+            dataType: string
+            lineageTag: e6347339-1d06-42cd-bc71-164fd147c94b
+            summarizeBy: none
+            sourceColumn: ThousandSep
+            annotation SummarizationSetBy = Automatic
+        column 'DecimalSep'
+            dataType: string
+            lineageTag: f8f67338-f923-45a4-a539-100378e88c17
+            summarizeBy: none
+            sourceColumn: DecimalSep
+            annotation SummarizationSetBy = Automatic
+        column 'MoneyThousandSep'
+            dataType: string
+            lineageTag: fec35710-3a9c-4472-9259-bca53bbdb915
+            summarizeBy: none
+            sourceColumn: MoneyThousandSep
+            annotation SummarizationSetBy = Automatic
+        column 'MoneyDecimalSep'
+            dataType: string
+            lineageTag: 761cf0dc-d157-49aa-b4a0-f53c4778e7aa
+            summarizeBy: none
+            sourceColumn: MoneyDecimalSep
+            annotation SummarizationSetBy = Automatic
+        column 'MoneyFormat'
+            dataType: string
+            lineageTag: c1dfabe2-8e03-48f2-a07d-c26c94d41ac5
+            summarizeBy: none
+            sourceColumn: MoneyFormat
+            annotation SummarizationSetBy = Automatic
+        column 'TimeFormat'
+            dataType: string
+            lineageTag: 3f7a60a9-9e09-4938-82d8-9af56ef016c8
+            summarizeBy: none
+            sourceColumn: TimeFormat
+            annotation SummarizationSetBy = Automatic
+        column 'DateFormat'
+            dataType: string
+            lineageTag: 85079c40-e151-49ff-b499-e9e1957993aa
+            summarizeBy: none
+            sourceColumn: DateFormat
+            annotation SummarizationSetBy = Automatic
+        column 'TimestampFormat'
+            dataType: string
+            lineageTag: db658a78-e843-4746-8659-67f8fcd4871e
+            summarizeBy: none
+            sourceColumn: TimestampFormat
+            annotation SummarizationSetBy = Automatic
+        column 'FirstWeekDay'
+            dataType: int64
+            lineageTag: d31246bb-a19f-47fa-875d-7872387857e5
+            summarizeBy: none
+            sourceColumn: FirstWeekDay
+            annotation SummarizationSetBy = Automatic
+        column 'BrokenWeeks'
+            dataType: int64
+            lineageTag: c96f6636-e31e-459f-b622-96259c735923
+            summarizeBy: none
+            sourceColumn: BrokenWeeks
+            annotation SummarizationSetBy = Automatic
+        column 'ReferenceDay'
+            dataType: int64
+            lineageTag: 82703509-6d29-46b0-95cd-d41800f80258
+            summarizeBy: none
+            sourceColumn: ReferenceDay
+            annotation SummarizationSetBy = Automatic
+        column 'FirstMonthOfYear'
+            dataType: int64
+            lineageTag: 89fc9177-3762-487f-a826-c91913da40cc
+            summarizeBy: none
+            sourceColumn: FirstMonthOfYear
+            annotation SummarizationSetBy = Automatic
+        column 'CollationLocale'
+            dataType: string
+            lineageTag: 73291364-c434-434b-a641-0490171c97cb
+            summarizeBy: none
+            sourceColumn: CollationLocale
+            annotation SummarizationSetBy = Automatic
+        column 'CreateSearchIndexOnReload'
+            dataType: bool
+            lineageTag: e014ae93-770e-4c93-928f-50503116859a
+            summarizeBy: none
+            sourceColumn: CreateSearchIndexOnReload
+            annotation SummarizationSetBy = Automatic
+        column 'MonthNames'
+            dataType: string
+            lineageTag: 4517ad70-76f7-43aa-b104-b19160cd23dc
+            summarizeBy: none
+            sourceColumn: MonthNames
+            annotation SummarizationSetBy = Automatic
+        column 'LongMonthNames'
+            dataType: string
+            lineageTag: 2e9d190d-84b3-45f8-897d-43c37ed8a415
+            summarizeBy: none
+            sourceColumn: LongMonthNames
+            annotation SummarizationSetBy = Automatic
+        column 'DayNames'
+            dataType: string
+            lineageTag: a642f6d7-8140-4940-8555-90e46216183d
+            summarizeBy: none
+            sourceColumn: DayNames
+            annotation SummarizationSetBy = Automatic
+        column 'LongDayNames'
+            dataType: string
+            lineageTag: b8461ea5-5f91-44ef-8103-b8b36f83f788
+            summarizeBy: none
+            sourceColumn: LongDayNames
+            annotation SummarizationSetBy = Automatic
+        column 'NumericalAbbreviation'
+            dataType: string
+            lineageTag: 52be1290-1238-411f-865c-b85957969ae4
+            summarizeBy: none
+            sourceColumn: NumericalAbbreviation
+            annotation SummarizationSetBy = Automatic
+        partition Employees
+            mode: import
+            source =
+                let
+                    Source = [lib://DataFiles/dataset.xlsx],
+                    ChangedType = Table.TransformColumnTypes(Source,{{"EmpID", type text}, {"Name", type text}})
+                in
+                    ChangedType
+        partition Sales
+            mode: import
+            source =
+                let
+                    Source = [lib://DataFiles/dataset.xlsx],
+                    ChangedType = Table.TransformColumnTypes(Source,{{"EmpID", type text}, {"LocId", type text}, {"Date", type datetime}, {"Total Sales", type number}, {"Total Units", type number}})
+                in
+                    ChangedType
+        partition Locations
+            mode: import
+            source =
+                let
+                    Source = [lib://DataFiles/dataset.xlsx],
+                    ChangedType = Table.TransformColumnTypes(Source,{{"LocId", type text}, {"City", type text}})
+                in
+                    ChangedType
+        annotation PBI_NavigationStepName = Configuration
+        annotation PBI_ResultType = Table
+        measure 'Best Performing Employee (Highest Sales)' = FirstSortedValue('Employees'[Employee-Sales], -Aggr(SUM('Sales'[Total Sales]), 'Employees'[EmpID]))
+          formatString: $ #,0
+          lineageTag: 992bc9c5-cbcf-4f71-a314-d6b896fb047b
+        measure 'Highest Sales Location' = FirstSortedValue('Employees'[Employee-Sales], -Aggr(SUM('Sales'[Total Sales]), 'Employees'[EmpID]))
+          formatString: $ #,0
+          lineageTag: a8f3e164-b9aa-4529-bdf7-f57eeb5874ef
+        measure 'Sales per Day' = SUM('Sales'[Total Sales]) / COUNTROWS('Sales')
+          formatString: $ #,0.00
+          lineageTag: e9240014-dacd-447c-af1d-e78765591784
+        measure 'Units Sold per Transaction' = SUM('Sales'[Total Units]) / COUNTROWS('Sales')
+          formatString: 0.00
+          lineageTag: 59ac10b6-ff90-4267-b769-f01d70608417
+        measure 'Sales per Employee per Location' = SUM('Sales'[Total Sales]) / DISTINCTCOUNT('Employees'[Employee-Sales])
+          formatString: $ #,0
+          lineageTag: 458a6707-1c05-4cae-b038-e9ae0b39bb59
+```
