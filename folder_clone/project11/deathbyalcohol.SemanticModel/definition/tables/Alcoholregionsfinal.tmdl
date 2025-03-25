@@ -1,88 +1,124 @@
-table Alcoholregionsfinal
-	lineageTag: 80026c3f-38e1-4fb5-b04a-5f33a48583e8
+createOrReplace
 
-	measure 'Total Deaths' = SUM(Alcoholregionsfinal[Deaths])
-		formatString: 0
-		lineageTag: 2382f046-e900-4c13-9fe7-92e8cb9a78a4
-
-	column Year
-		dataType: string
-		lineageTag: 826009ad-19ff-4ce1-9aa6-b50cca7411c5
-		summarizeBy: none
-		sourceColumn: Year
-
-		annotation SummarizationSetBy = Automatic
-
-	column ICD_10_code
-		dataType: string
-		lineageTag: f42e2747-47ad-43cf-8420-4ed759d618c3
-		summarizeBy: none
-		sourceColumn: ICD_10_code
-
-		annotation SummarizationSetBy = Automatic
-
-	column Individual_cause_of_death_description
-		dataType: string
-		lineageTag: fa2e335c-5e78-459c-b867-cea556d29fe2
-		summarizeBy: none
-		sourceColumn: Individual_cause_of_death_description
-
-		annotation SummarizationSetBy = Automatic
-
-	column Gender
-		dataType: string
-		lineageTag: 014734f5-093b-417d-babc-2bfd1caf3bc6
-		summarizeBy: none
-		sourceColumn: Gender
-
-		annotation SummarizationSetBy = Automatic
-
-	column Age_Groups
-		dataType: string
-		lineageTag: 2bcda326-c5c8-4ea9-bd3e-aa92f74d3839
-		summarizeBy: none
-		sourceColumn: Age_Groups
-
-		annotation SummarizationSetBy = Automatic
-
-	column Age_Groups_Index
-		dataType: string
-		lineageTag: f83b7017-5583-4d0c-929c-f79e238c4b2b
-		summarizeBy: none
-		sourceColumn: Age_Groups_Index
-
-		annotation SummarizationSetBy = Automatic
-
-	column Deaths
-		dataType: int64
-		formatString: 0
-		lineageTag: dfd3c178-061b-4649-a222-66f31a6998ec
-		summarizeBy: sum
-		sourceColumn: Deaths
-
-		annotation SummarizationSetBy = Automatic
-
-	column Location
-		dataType: string
-		lineageTag: 1744c1d0-dfce-44c3-b34f-d50be3a3d42b
-		summarizeBy: none
-		sourceColumn: Location
-
-		annotation SummarizationSetBy = Automatic
-
-	partition Alcoholregionsfinal = m
-		mode: import
-		source =
-				let
-				    Source = Sql.Databases("health-careserver.database.windows.net"),
-				    #"Alcohol-specific deaths in uk" = Source{[Name="Alcohol-specific deaths in uk"]}[Data],
-				    dbo_Alcoholregionsfinal = #"Alcohol-specific deaths in uk"{[Schema="dbo",Item="Alcoholregionsfinal"]}[Data],
-				    #"Changed Type" = Table.TransformColumnTypes(dbo_Alcoholregionsfinal,{{"Year", type text}, {"Deaths", Int64.Type}}),
-				    #"Filtered Rows" = Table.SelectRows(#"Changed Type", each ([Gender] <> "Persons") and ([Location] <> "Location"))
-				in
-				    #"Filtered Rows"
-
-	annotation PBI_NavigationStepName = Navigation
-
-	annotation PBI_ResultType = Table
-
+    table Main
+        lineageTag: b7cff6a8-c974-4cae-8fc5-de4c8a63f236
+        column name
+            dataType: string
+            lineageTag: d23af865-ff3b-49c2-bba6-8b456fc88c61
+            summarizeBy: none
+            sourceColumn: name
+            annotation SummarizationSetBy = Automatic
+        partition __cityAliasesBase = m
+            mode: import
+            source =
+                let
+                    Alias = 'Alias',
+                    geoKey = 'geoKey',
+                    CountryCode = 'CountryCode'
+                in
+                    [
+                      {
+                        "Alias": "New York",
+                        "geoKey": "12345",
+                        "CountryCode": "US"
+                      },
+                      {
+                        "Alias": "Los Angeles",
+                        "geoKey": "54321",
+                        "CountryCode": "US"
+                      }
+                    ]
+        partition __cityGeoBase = m
+            mode: import
+            source =
+                let
+                    geoKey = 'geoKey',
+                    geoPoint = 'geoPoint'
+                in
+                    [
+                      {
+                        "geoKey": "12345",
+                        "geoPoint": "40.7128,-74.0060"
+                      },
+                      {
+                        "geoKey": "54321",
+                        "geoPoint": "34.0522,-118.2437"
+                      }
+                    ]
+        partition [Employees] = m
+            mode: import
+            source =
+                let
+                    EmpID = 'EmpID',
+                    Name = 'Name'
+                in
+                    [
+                      {
+                        "EmpID": 1,
+                        "Name": "John Doe"
+                      },
+                      {
+                        "EmpID": 2,
+                        "Name": "Jane Smith"
+                      }
+                    ]
+        partition [Sales] = m
+            mode: import
+            source =
+                let
+                    EmpID = 'EmpID',
+                    LocId = 'LocId',
+                    Date = 'Date',
+                    Total_Sales = 'Total Sales',
+                    Total_Units = 'Total Units'
+                in
+                    [
+                      {
+                        "EmpID": 1,
+                        "LocId": "A",
+                        "Date": "01/01/2023",
+                        "Total Sales": 100,
+                        "Total Units": 5
+                      },
+                      {
+                        "EmpID": 2,
+                        "LocId": "B",
+                        "Date": "01/02/2023",
+                        "Total Sales": 150,
+                        "Total Units": 8
+                      }
+                    ]
+        partition [Locations] = m
+            mode: import
+            source =
+                let
+                    LocId = 'LocId',
+                    City = 'City'
+                in
+                    [
+                      {
+                        "LocId": "A",
+                        "City": "New York"
+                      },
+                      {
+                        "LocId": "B",
+                        "City": "Los Angeles"
+                      }
+                    ]
+        annotation PBI_NavigationStepName = Main
+        annotation PBI_ResultType = Table
+        measure 'Best Performing Employee (Highest Sales)' = FirstSortedValue([Employee-Sales], -Aggr(SUM([Total Sales]), [Employee-Sales]))
+          formatString: $ #,0
+          lineageTag: c2f8f8d9-2603-4005-84df-914568256b73
+        measure 'Highest Sales Location' = FirstSortedValue([Employee-Sales], -Aggr(SUM([Total Sales]), [Employee-Sales]))
+          formatString: $ #,0
+          lineageTag: a8e95483-202-4525-b2a2-b2418fdbde4c
+        measure 'Sales per Day' = SUM([Total Sales]) / COUNT(DISTINCT [Date])
+          formatString: $ #,0
+          lineageTag: 42721487-f1de-4a90-84bc-fc96ab3194b
+        measure 'Units Sold per Transaction' = SUM([Total Units]) / COUNT([Total Units])
+          formatString: #,0.00
+          lineageTag: c4f813e1-f105-41d5-8a9f-07c8e66bc40b
+        measure 'Sales per Employee per Location' = SUM([Total Sales]) / COUNT(DISTINCT [Employee-Sales])
+          formatString: $ #,0
+          lineageTag: 33ad0454-f012-46af-ae03-33ad45c012a3
