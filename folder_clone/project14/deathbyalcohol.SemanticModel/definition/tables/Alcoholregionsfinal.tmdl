@@ -1,88 +1,125 @@
-table Alcoholregionsfinal
-	lineageTag: 80026c3f-38e1-4fb5-b04a-5f33a48583e8
+```
+createOrReplace
 
-	measure 'Total Deaths' = SUM(Alcoholregionsfinal[Deaths])
-		formatString: 0
-		lineageTag: 2382f046-e900-4c13-9fe7-92e8cb9a78a4
+    table Hospital_ER
+        lineageTag: b7cff6a8-c974-4cae-8fc5-de4c8a63f236
+        column date
+            dataType: datetime
+            lineageTag: c78f148f-d4e8-4539-a99e-f307967202c5
+            summarizeBy: none
+            sourceColumn: date
+            annotation SummarizationSetBy = Automatic
 
-	column Year
-		dataType: string
-		lineageTag: 826009ad-19ff-4ce1-9aa6-b50cca7411c5
-		summarizeBy: none
-		sourceColumn: Year
+        column patient_id
+            dataType: string
+            lineageTag: de6ca28f-fec3-43ef-ac59-d8100d796302
+            summarizeBy: none
+            sourceColumn: patient_id
+            annotation SummarizationSetBy = Automatic
 
-		annotation SummarizationSetBy = Automatic
+        column patient_gender
+            dataType: string
+            lineageTag: f6202de1-1c5d-4b22-be91-20bdf5e8aa91
+            summarizeBy: none
+            sourceColumn: patient_gender
+            annotation SummarizationSetBy = Automatic
 
-	column ICD_10_code
-		dataType: string
-		lineageTag: f42e2747-47ad-43cf-8420-4ed759d618c3
-		summarizeBy: none
-		sourceColumn: ICD_10_code
+        column patient_age
+            dataType: int64
+            lineageTag: 84cee5a4-5c00-4b04-91b1-2198a4b886b5
+            summarizeBy: average
+            sourceColumn: patient_age
+            annotation SummarizationSetBy = Automatic
 
-		annotation SummarizationSetBy = Automatic
+        column patient_sat_score
+            dataType: int64
+            lineageTag: e034f96e-7e6a-4e13-bc20-24246dfa9b6c
+            summarizeBy: average
+            sourceColumn: patient_sat_score
+            annotation SummarizationSetBy = Automatic
 
-	column Individual_cause_of_death_description
-		dataType: string
-		lineageTag: fa2e335c-5e78-459c-b867-cea556d29fe2
-		summarizeBy: none
-		sourceColumn: Individual_cause_of_death_description
+        column patient_first_inital
+            dataType: string
+            lineageTag: 714db991-0450-4d21-8145-640a104a6ca9
+            summarizeBy: none
+            sourceColumn: patient_first_inital
+            annotation SummarizationSetBy = Automatic
 
-		annotation SummarizationSetBy = Automatic
+        column patient_last_name
+            dataType: string
+            lineageTag: 6fca95b5-7985-4734-a1d5-3549521ee412
+            summarizeBy: none
+            sourceColumn: patient_last_name
+            annotation SummarizationSetBy = Automatic
 
-	column Gender
-		dataType: string
-		lineageTag: 014734f5-093b-417d-babc-2bfd1caf3bc6
-		summarizeBy: none
-		sourceColumn: Gender
+        column patient_race
+            dataType: string
+            lineageTag: ba33573b-ad31-4501-8471-8afa1fda5135
+            summarizeBy: none
+            sourceColumn: patient_race
+            annotation SummarizationSetBy = Automatic
 
-		annotation SummarizationSetBy = Automatic
+        column patient_admin_flag
+            dataType: string
+            lineageTag: 79edc306-1a81-471c-822a-de4ae99fa1db
+            summarizeBy: none
+            sourceColumn: patient_admin_flag
+            annotation SummarizationSetBy = Automatic
 
-	column Age_Groups
-		dataType: string
-		lineageTag: 2bcda326-c5c8-4ea9-bd3e-aa92f74d3839
-		summarizeBy: none
-		sourceColumn: Age_Groups
+        column patient_waittime
+            dataType: int64
+            lineageTag: 0b6027cd-5306-4132-a682-440e98a719c6
+            summarizeBy: average
+            sourceColumn: patient_waittime
+            annotation SummarizationSetBy = Automatic
 
-		annotation SummarizationSetBy = Automatic
+        column department_referral
+            dataType: string
+            lineageTag: 567416f1-2070-42ef-ae44-8a64f4988048
+            summarizeBy: none
+            sourceColumn: department_referral
+            annotation SummarizationSetBy = Automatic
 
-	column Age_Groups_Index
-		dataType: string
-		lineageTag: f83b7017-5583-4d0c-929c-f79e238c4b2b
-		summarizeBy: none
-		sourceColumn: Age_Groups_Index
+        partition Hospital_ER = m
+            mode: import
+            source =
+                let
+                    Source = Sql.Database("health-careserver.database.windows.net", "health-care2025", [Query="SELECT [date], [patient_id], [patient_gender], [patient_age], [patient_sat_score], [patient_first_inital], [patient_last_name], [patient_race], [patient_admin_flag], [patient_waittime], [department_referral] FROM dbo.Hospital ER"]),
+                    ChangedType = Table.TransformColumnTypes(Source,{{"date", type datetime}, {"patient_id", type text}, {"patient_gender", type text}, {"patient_age", Int64.Type}, {"patient_sat_score", type number}, {"patient_first_inital", type text}, {"patient_last_name", type text}, {"patient_race", type text}, {"patient_admin_flag", type text}, {"patient_waittime", type number}, {"department_referral", type text}})
+                in
+                    ChangedType
 
-		annotation SummarizationSetBy = Automatic
+        annotation PBI_NavigationStepName = Navigation
+        annotation PBI_ResultType = Table
+        measure 'Total patients' = Count('Hospital_ER'[patient_id])
+          formatString: 0
+          lineageTag: jTacdm
 
-	column Deaths
-		dataType: int64
-		formatString: 0
-		lineageTag: dfd3c178-061b-4649-a222-66f31a6998ec
-		summarizeBy: sum
-		sourceColumn: Deaths
+        measure 'Average Wait Time' = Average('Hospital_ER'[patient_waittime])
+          formatString: 0.00
+          lineageTag: pnxvJ
 
-		annotation SummarizationSetBy = Automatic
+        measure 'Satisfaction Score Analysis' = Average('Hospital_ER'[patient_sat_score])
+          formatString: 0%
+          lineageTag: pUuEYW
 
-	column Location
-		dataType: string
-		lineageTag: 1744c1d0-dfce-44c3-b34f-d50be3a3d42b
-		summarizeBy: none
-		sourceColumn: Location
+        measure 'Patient Age Distribution' = Average('Hospital_ER'[patient_age])
+          formatString: 0
+          lineageTag: RhBgr
 
-		annotation SummarizationSetBy = Automatic
+        measure 'Admission Rate' = Count({<patient_admin_flag = {'True'}>} 'Hospital_ER'[patient_id])
+          formatString: 0
+          lineageTag: jmzHzN
 
-	partition Alcoholregionsfinal = m
-		mode: import
-		source =
-				let
-				    Source = Sql.Databases("health-careserver.database.windows.net"),
-				    #"Alcohol-specific deaths in uk" = Source{[Name="Alcohol-specific deaths in uk"]}[Data],
-				    dbo_Alcoholregionsfinal = #"Alcohol-specific deaths in uk"{[Schema="dbo",Item="Alcoholregionsfinal"]}[Data],
-				    #"Changed Type" = Table.TransformColumnTypes(dbo_Alcoholregionsfinal,{{"Year", type text}, {"Deaths", Int64.Type}}),
-				    #"Filtered Rows" = Table.SelectRows(#"Changed Type", each ([Gender] <> "Persons") and ([Location] <> "Location"))
-				in
-				    #"Filtered Rows"
+        measure 'Referral Department Distribution' = Count({<department_referral = {'General Practice'}>} 'Hospital_ER'[patient_id])
+          formatString: 0
+          lineageTag: mPWPA
 
-	annotation PBI_NavigationStepName = Navigation
+        measure 'Admitted' = Count({<patient_admin_flag = {'1'}>} 'Hospital_ER'[patient_id])
+          formatString: 0
+          lineageTag: mpdQJE
 
-	annotation PBI_ResultType = Table
-
+        measure 'Not Admitted' = Count({<patient_admin_flag = {'0'}>} 'Hospital_ER'[patient_id])
+          formatString: 0
+          lineageTag: SRBCuV
+```
