@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "deathbyalcohol"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "38ec8c51-e130-4083-9664-516c526366d9"
+  }
+}
