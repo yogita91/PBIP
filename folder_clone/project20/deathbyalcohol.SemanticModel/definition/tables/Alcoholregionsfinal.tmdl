@@ -1,88 +1,86 @@
-table Alcoholregionsfinal
-	lineageTag: 80026c3f-38e1-4fb5-b04a-5f33a48583e8
+```yaml
+createOrReplace
 
-	measure 'Total Deaths' = SUM(Alcoholregionsfinal[Deaths])
-		formatString: 0
-		lineageTag: 2382f046-e900-4c13-9fe7-92e8cb9a78a4
+    table Main
+        lineageTag: f5e8df59-3462-45e4-a602-f3b30803de14
+        column name
+            dataType: string
+            lineageTag: 5c8670d6-bd62-472c-b89b-22da15e19b4b
+            summarizeBy: none
+            sourceColumn: name
+            annotation SummarizationSetBy = Automatic
 
-	column Year
-		dataType: string
-		lineageTag: 826009ad-19ff-4ce1-9aa6-b50cca7411c5
-		summarizeBy: none
-		sourceColumn: Year
-
-		annotation SummarizationSetBy = Automatic
-
-	column ICD_10_code
-		dataType: string
-		lineageTag: f42e2747-47ad-43cf-8420-4ed759d618c3
-		summarizeBy: none
-		sourceColumn: ICD_10_code
-
-		annotation SummarizationSetBy = Automatic
-
-	column Individual_cause_of_death_description
-		dataType: string
-		lineageTag: fa2e335c-5e78-459c-b867-cea556d29fe2
-		summarizeBy: none
-		sourceColumn: Individual_cause_of_death_description
-
-		annotation SummarizationSetBy = Automatic
-
-	column Gender
-		dataType: string
-		lineageTag: 014734f5-093b-417d-babc-2bfd1caf3bc6
-		summarizeBy: none
-		sourceColumn: Gender
-
-		annotation SummarizationSetBy = Automatic
-
-	column Age_Groups
-		dataType: string
-		lineageTag: 2bcda326-c5c8-4ea9-bd3e-aa92f74d3839
-		summarizeBy: none
-		sourceColumn: Age_Groups
-
-		annotation SummarizationSetBy = Automatic
-
-	column Age_Groups_Index
-		dataType: string
-		lineageTag: f83b7017-5583-4d0c-929c-f79e238c4b2b
-		summarizeBy: none
-		sourceColumn: Age_Groups_Index
-
-		annotation SummarizationSetBy = Automatic
-
-	column Deaths
-		dataType: int64
-		formatString: 0
-		lineageTag: dfd3c178-061b-4649-a222-66f31a6998ec
-		summarizeBy: sum
-		sourceColumn: Deaths
-
-		annotation SummarizationSetBy = Automatic
-
-	column Location
-		dataType: string
-		lineageTag: 1744c1d0-dfce-44c3-b34f-d50be3a3d42b
-		summarizeBy: none
-		sourceColumn: Location
-
-		annotation SummarizationSetBy = Automatic
-
-	partition Alcoholregionsfinal = m
-		mode: import
-		source =
-				let
-				    Source = Sql.Databases("health-careserver.database.windows.net"),
-				    #"Alcohol-specific deaths in uk" = Source{[Name="Alcohol-specific deaths in uk"]}[Data],
-				    dbo_Alcoholregionsfinal = #"Alcohol-specific deaths in uk"{[Schema="dbo",Item="Alcoholregionsfinal"]}[Data],
-				    #"Changed Type" = Table.TransformColumnTypes(dbo_Alcoholregionsfinal,{{"Year", type text}, {"Deaths", Int64.Type}}),
-				    #"Filtered Rows" = Table.SelectRows(#"Changed Type", each ([Gender] <> "Persons") and ([Location] <> "Location"))
-				in
-				    #"Filtered Rows"
-
-	annotation PBI_NavigationStepName = Navigation
-
-	annotation PBI_ResultType = Table
-
+        partition __cityAliasesBase = m
+            mode: import
+            source =
+                let
+                    Source = [lib://DataFiles/cityAliases.qvd],
+                    Type = qvd
+                in
+                    Source
+        partition __cityGeoBase = m
+            mode: import
+            source =
+                let
+                    Source = [lib://DataFiles/cityGeo.qvd],
+                    Type = qvd
+                in
+                    Source
+        partition __cityName2Key = m
+            mode: import
+            source =
+                let
+                    Source = MAPPING LOAD __City, __geoKey RESIDENT __cityAliasesBase
+                in
+                    Source
+        partition __cityKey2GeoPoint = m
+            mode: import
+            source =
+                let
+                    Source = MAPPING LOAD __geoKey, __GeoPoint RESIDENT __cityGeoBase
+                in
+                    Source
+        partition Employees = m
+            mode: import
+            source =
+                let
+                    Source = LOAD [EmpID] AS [Employee-Sales], [Name] FROM [lib://DataFiles/dataset.xlsx] (ooxml, embedded labels, table is Employees)
+                in
+                    Source
+        partition Sales = m
+            mode: import
+            source =
+                let
+                    Source = LOAD [EmpID] AS [Employee-Sales], [LocId] AS [Location-Sales], Date(Date#([Date], 'DD/MM/YYYY')) AS [Date], [Total Sales], [Total Units] FROM [lib://DataFiles/dataset.xlsx] (ooxml, embedded labels, table is Sales)
+                in
+                    Source
+        partition Locations = m
+            mode: import
+            source =
+                let
+                    Source = LOAD [LocId] AS [Location-Sales], [City], APPLYMAP('__cityKey2GeoPoint', APPLYMAP('__cityName2Key', LOWER([City])), '-') AS [Locations.City_GeoInfo] FROM [lib://DataFiles/dataset.xlsx] (ooxml, embedded labels, table is Locations)
+                in
+                    Source
+        annotation PBI_ResultType = Table
+        measures:
+          - name: 'Best Performing Employee (Highest Sales)'
+            expression: FirstSortedValue([Employee-Sales], -Aggr(SUM([Total Sales]), [Employee-Sales]))
+            formatString: U
+            lineageTag: 93ed5d7f-cd81-45e9-bf69-d9f452659c5d
+          - name: 'Highest Sales Location'
+            expression: FirstSortedValue([Employee-Sales], -Aggr(SUM([Total Sales]), [Employee-Sales]))
+            formatString: U
+            lineageTag: 7f87fb9d-1894-43d0-865e-f48fdd67e61c
+          - name: 'Sales per Day'
+            expression: SUM([Total Sales]) / COUNT(DISTINCT [Date])
+            formatString: U
+            lineageTag: d401bc59-4f83-47f5-8dbd-f44171e8297a
+          - name: 'Units Sold per Transaction'
+            expression: SUM([Total Units]) / COUNT([Total Units])
+            formatString: U
+            lineageTag: a5179d29-40b8-4516-b80a-690517bded05
+          - name: 'Sales per Employee per Location'
+            expression: SUM([Total Sales]) / COUNT(DISTINCT [Employee-Sales])
+            formatString: U
+            lineageTag: cfd4e444-d26d-4dd9-a774-5035305b9630
+```
