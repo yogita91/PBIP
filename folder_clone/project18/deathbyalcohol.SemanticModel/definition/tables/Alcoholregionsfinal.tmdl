@@ -1,88 +1,97 @@
-table Alcoholregionsfinal
-	lineageTag: 80026c3f-38e1-4fb5-b04a-5f33a48583e8
+```
+createOrReplace
 
-	measure 'Total Deaths' = SUM(Alcoholregionsfinal[Deaths])
-		formatString: 0
-		lineageTag: 2382f046-e900-4c13-9fe7-92e8cb9a78a4
-
-	column Year
-		dataType: string
-		lineageTag: 826009ad-19ff-4ce1-9aa6-b50cca7411c5
-		summarizeBy: none
-		sourceColumn: Year
-
-		annotation SummarizationSetBy = Automatic
-
-	column ICD_10_code
-		dataType: string
-		lineageTag: f42e2747-47ad-43cf-8420-4ed759d618c3
-		summarizeBy: none
-		sourceColumn: ICD_10_code
-
-		annotation SummarizationSetBy = Automatic
-
-	column Individual_cause_of_death_description
-		dataType: string
-		lineageTag: fa2e335c-5e78-459c-b867-cea556d29fe2
-		summarizeBy: none
-		sourceColumn: Individual_cause_of_death_description
-
-		annotation SummarizationSetBy = Automatic
-
-	column Gender
-		dataType: string
-		lineageTag: 014734f5-093b-417d-babc-2bfd1caf3bc6
-		summarizeBy: none
-		sourceColumn: Gender
-
-		annotation SummarizationSetBy = Automatic
-
-	column Age_Groups
-		dataType: string
-		lineageTag: 2bcda326-c5c8-4ea9-bd3e-aa92f74d3839
-		summarizeBy: none
-		sourceColumn: Age_Groups
-
-		annotation SummarizationSetBy = Automatic
-
-	column Age_Groups_Index
-		dataType: string
-		lineageTag: f83b7017-5583-4d0c-929c-f79e238c4b2b
-		summarizeBy: none
-		sourceColumn: Age_Groups_Index
-
-		annotation SummarizationSetBy = Automatic
-
-	column Deaths
-		dataType: int64
-		formatString: 0
-		lineageTag: dfd3c178-061b-4649-a222-66f31a6998ec
-		summarizeBy: sum
-		sourceColumn: Deaths
-
-		annotation SummarizationSetBy = Automatic
-
-	column Location
-		dataType: string
-		lineageTag: 1744c1d0-dfce-44c3-b34f-d50be3a3d42b
-		summarizeBy: none
-		sourceColumn: Location
-
-		annotation SummarizationSetBy = Automatic
-
-	partition Alcoholregionsfinal = m
-		mode: import
-		source =
-				let
-				    Source = Sql.Databases("health-careserver.database.windows.net"),
-				    #"Alcohol-specific deaths in uk" = Source{[Name="Alcohol-specific deaths in uk"]}[Data],
-				    dbo_Alcoholregionsfinal = #"Alcohol-specific deaths in uk"{[Schema="dbo",Item="Alcoholregionsfinal"]}[Data],
-				    #"Changed Type" = Table.TransformColumnTypes(dbo_Alcoholregionsfinal,{{"Year", type text}, {"Deaths", Int64.Type}}),
-				    #"Filtered Rows" = Table.SelectRows(#"Changed Type", each ([Gender] <> "Persons") and ([Location] <> "Location"))
-				in
-				    #"Filtered Rows"
-
-	annotation PBI_NavigationStepName = Navigation
-
-	annotation PBI_ResultType = Table
-
+    table Main
+        lineageTag: 2a69e006-51e3-4c01-83b9-26d193b328ed
+        column name
+            dataType: string
+            lineageTag: 8b754682-f684-4175-9640-611653ac71e3
+            summarizeBy: none
+            sourceColumn: name
+            annotation SummarizationSetBy = Automatic
+        partition autoCalendar = m
+            mode: import
+            source =
+                let
+                    Source = [lib://DataFiles/cityAliases.qvd],
+                    Name = 'cityAliases',
+                    Type = 'qvd',
+                    LineageTag = '28d92cb9-c20b-47ab-81e7-b543f3ec6ecb'
+                in
+                    Source
+        partition Employees = m
+            mode: import
+            source =
+                let
+                    Source = [lib://DataFiles/dataset.xlsx],
+                    Name = 'Employees',
+                    Type = 'ooxml',
+                    LineageTag = '03bc0143-98ed-4269-920f-32599f154063'
+                in
+                    Source
+        partition Sales = m
+            mode: import
+            source =
+                let
+                    Source = [lib://DataFiles/dataset.xlsx],
+                    Name = 'Sales',
+                    Type = 'ooxml',
+                    LineageTag = 'f5a64cbb-6dfc-45de-95e7-f0456dfc4087'
+                in
+                    Source
+        partition Locations = m
+            mode: import
+            source =
+                let
+                    Source = [lib://DataFiles/dataset.xlsx],
+                    Name = 'Locations',
+                    Type = 'ooxml',
+                    LineageTag = 'f79c1c12-89cb-485f-b173-05b3df401248'
+                in
+                    Source
+        column __cityAliasesBase
+            dataType: table
+            lineageTag: c33cb0af-abc8-479e-a564-a22373d1f400
+            summarizeBy: none
+            sourceColumn: __cityAliasesBase
+            annotation SummarizationSetBy = Automatic
+        column __cityGeoBase
+            dataType: table
+            lineageTag: d432de9b-e85e-455e-bd26-d5997b585b36
+            summarizeBy: none
+            sourceColumn: __cityGeoBase
+            annotation SummarizationSetBy = Automatic
+        column __cityName2Key
+            dataType: table
+            lineageTag: a8b65987-c997-4557-a834-112981270074
+            summarizeBy: none
+            sourceColumn: __cityName2Key
+            annotation SummarizationSetBy = Automatic
+        column __cityKey2GeoPoint
+            dataType: table
+            lineageTag: 1cc251c1-c740-49e9-9189-1491afdc6468
+            summarizeBy: none
+            sourceColumn: __cityKey2GeoPoint
+            annotation SummarizationSetBy = Automatic
+        measures:
+            - name: 'Best Performing Employee (Highest Sales)'
+              expression: 'FirstSortedValue([Employee-Sales], -Aggr(SUM([Total Sales]), EmpID))'
+              formatString: '0.00'
+              lineageTag: 9678b879-cf68-48d8-890c-1696e8b74231
+            - name: 'Highest Sales Location'
+              expression: 'FirstSortedValue([Employee-Sales], -Aggr(SUM([Total Sales]), EmpID))'
+              formatString: '0.00'
+              lineageTag: d1f0251c-bfc1-4aa7-a994-c55d659368de
+            - name: 'Sales per Day'
+              expression: 'SUM([Total Sales]) / COUNT(DISTINCT [Date])'
+              formatString: '0.00'
+              lineageTag: f5e27847-d21c-43ec-867f-802d01f0453a
+            - name: 'Units Sold per Transaction'
+              expression: 'SUM([Total Units]) / COUNT([Total Units])'
+              formatString: '0.00'
+              lineageTag: dc184e29-2170-4769-8f56-83140ed8b8f0
+            - name: 'Sales per Employee per Location'
+              expression: 'SUM([Total Sales]) / COUNT(DISTINCT [Employee-Sales])'
+              formatString: '0.00'
+              lineageTag: c67b5ca6-daa8-4dd1-83d3-c91d68854350
+```
